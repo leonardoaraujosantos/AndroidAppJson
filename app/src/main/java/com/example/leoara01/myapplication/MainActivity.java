@@ -1,10 +1,15 @@
 package com.example.leoara01.myapplication;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,25 +20,41 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
+    ImageView imgFace;
+    Bitmap bmpFace;
+    String imgStringEncoded = "";
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+        bmpFace = (Bitmap)data.getExtras().get("data");
+        imgFace.setImageBitmap(bmpFace);
+        imgStringEncoded = encodeToBase64(bmpFace);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button button1 = (Button) findViewById(R.id.button);
-        Button button2 = (Button) findViewById(R.id.button2);
+        // Initialize widgets from resource file
+        Button btListPerson = (Button) findViewById(R.id.btListPerson);
+        Button btDeletePerson = (Button) findViewById(R.id.btDeletePerson);
+        Button btAddPerson = (Button) findViewById(R.id.btAddPerson);
         final TextView mTextView = (TextView) findViewById(R.id.textView);
-        button1.setOnClickListener(new View.OnClickListener() {
+        imgFace = (ImageView) findViewById(R.id.imgFace);
+
+        // Get list of persons
+        btListPerson.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view){
                 RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
@@ -66,7 +87,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        button2.setOnClickListener(new View.OnClickListener() {
+        // Delete Person
+        btDeletePerson.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view){
                 RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
@@ -103,5 +125,26 @@ public class MainActivity extends AppCompatActivity {
                 requestQueue.add(jsonObjectRequest);
             }
         });
+
+        // Get Picture
+        btAddPerson.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view){
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(intent, 0);
+            }
+        });
+    }
+
+    // Encode image to PNG base64
+    public static String encodeToBase64(Bitmap image) {
+        Bitmap immagex=image;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        immagex.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] b = baos.toByteArray();
+        String imageEncoded = Base64.encodeToString(b, Base64.DEFAULT);
+
+        Log.e(TAG, imageEncoded);
+        return imageEncoded;
     }
 }
