@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.hardware.Camera;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -41,45 +42,56 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 0 && resultCode == RESULT_OK) {
+            // Get the image from the activity and convert to base64 before encoding on PNG
+            bmpFace = (Bitmap)data.getExtras().get("data");
 
-        // Get the image from the activity and convert to base64 before encoding on PNG
-        bmpFace = (Bitmap)data.getExtras().get("data");
+            // Check camera orientation
+            int cameraCount = Camera.getNumberOfCameras();
+            Camera cam = null;
+            Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
+            Camera.getCameraInfo(0, cameraInfo);
+            if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT){
+                // Rotate bitmap
+                Matrix matrix = new Matrix();
+                matrix.preRotate(-90);
+                Bitmap scaledBitmap  = Bitmap.createScaledBitmap(bmpFace, bmpFace.getWidth(), bmpFace.getHeight(), true);
+                Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
 
-        // Rotate bitmap
-        Matrix matrix = new Matrix();
-        matrix.preRotate(-90);
-        Bitmap scaledBitmap  = Bitmap.createScaledBitmap(bmpFace, bmpFace.getWidth(), bmpFace.getHeight(), true);
-        Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
+                imgFace.setImageBitmap(rotatedBitmap);
+                imgStringEncoded = encodeToBase64(rotatedBitmap);
+            } else {
+                imgFace.setImageBitmap(bmpFace);
+                imgStringEncoded = encodeToBase64(bmpFace);
+            }
 
-        imgFace.setImageBitmap(rotatedBitmap);
-        imgStringEncoded = encodeToBase64(rotatedBitmap);
+            String url = mTextIP.getText() + "add_person";
+            RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+            // Json parameters
+            Map<String, String> params = new HashMap();
+            params.put("person", mTextName.getText().toString());
+            params.put("data", imgStringEncoded);
+            params.put("mult_images", "No");
+            JSONObject parameters = new JSONObject(params);
 
-        String url = mTextIP.getText() + "add_person";
-        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-        // Json parameters
-        Map<String, String> params = new HashMap();
-        params.put("person", mTextName.getText().toString());
-        params.put("data", imgStringEncoded);
-        params.put("mult_images", "No");
-        JSONObject parameters = new JSONObject(params);
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                    (Request.Method.POST, url, parameters, new Response.Listener<JSONObject>() {
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.POST, url, parameters, new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            mTextView.setText("Response: " + response.toString());
+                        }
+                    }, new Response.ErrorListener() {
 
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        mTextView.setText("Response: " + response.toString());
-                    }
-                }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            mTextView.setText(error.getMessage());
+                        }
+                    });
 
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        mTextView.setText(error.getMessage());
-                    }
-                });
-
-        // Access the RequestQueue through your singleton class.
-        requestQueue.add(jsonObjectRequest);
+            // Access the RequestQueue through your singleton class.
+            requestQueue.add(jsonObjectRequest);
+        }
     }
 
     @Override
