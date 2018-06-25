@@ -2,6 +2,8 @@ package com.example.leoara01.myapplication;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -32,13 +34,52 @@ public class MainActivity extends AppCompatActivity {
     ImageView imgFace;
     Bitmap bmpFace;
     String imgStringEncoded = "";
+    TextView mTextView;
+    TextView mTextIP;
+    TextView mTextName;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
+
+        // Get the image from the activity and convert to base64 before encoding on PNG
         bmpFace = (Bitmap)data.getExtras().get("data");
-        imgFace.setImageBitmap(bmpFace);
-        imgStringEncoded = encodeToBase64(bmpFace);
+
+        // Rotate bitmap
+        Matrix matrix = new Matrix();
+        matrix.preRotate(-90);
+        Bitmap scaledBitmap  = Bitmap.createScaledBitmap(bmpFace, bmpFace.getWidth(), bmpFace.getHeight(), true);
+        Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
+
+        imgFace.setImageBitmap(rotatedBitmap);
+        imgStringEncoded = encodeToBase64(rotatedBitmap);
+
+        String url = mTextIP.getText() + "add_person";
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        // Json parameters
+        Map<String, String> params = new HashMap();
+        params.put("person", mTextName.getText().toString());
+        params.put("data", imgStringEncoded);
+        params.put("mult_images", "No");
+        JSONObject parameters = new JSONObject(params);
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.POST, url, parameters, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        mTextView.setText("Response: " + response.toString());
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        mTextView.setText(error.getMessage());
+                    }
+                });
+
+        // Access the RequestQueue through your singleton class.
+        requestQueue.add(jsonObjectRequest);
     }
 
     @Override
@@ -50,7 +91,9 @@ public class MainActivity extends AppCompatActivity {
         Button btListPerson = (Button) findViewById(R.id.btListPerson);
         Button btDeletePerson = (Button) findViewById(R.id.btDeletePerson);
         Button btAddPerson = (Button) findViewById(R.id.btAddPerson);
-        final TextView mTextView = (TextView) findViewById(R.id.textView);
+        mTextView = (TextView) findViewById(R.id.textView);
+        mTextIP = (TextView) findViewById(R.id.txtIP);
+        mTextName = (TextView) findViewById(R.id.txtName);
         imgFace = (ImageView) findViewById(R.id.imgFace);
 
         // Get list of persons
@@ -62,10 +105,11 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "OnClick");
                 mTextView.setText("JSON");
                 //Toast.makeText("")
-                Toast.makeText(getApplicationContext(), "Exemplo Toast", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), mTextIP.getText() + "Gathering person list", Toast.LENGTH_SHORT).show();
 
                 //String url = "http://127.0.0.1:8080/list_persons";
-                String url = "http://10.45.68.72:8080/list_persons";
+                //String url = "http://10.45.68.72:8080/list_persons";
+                String url = mTextIP.getText() + "list_persons";
 
                 JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                         (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -99,11 +143,13 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Exemplo Toast", Toast.LENGTH_SHORT).show();
 
                 //String url = "http://127.0.0.1:8080/list_persons";
-                String url = "http://10.45.68.72:8080/delete_person";
+                //String url = "http://10.45.68.72:8080/delete_person";
+                //String url = "http://172.27.96.241:8080/delete_person";
+                String url = mTextIP.getText() + "delete_person";
 
                 // Json parameters
                 Map<String, String> params = new HashMap();
-                params.put("person", "James");
+                params.put("person", mTextName.getText().toString());
                 JSONObject parameters = new JSONObject(params);
 
                 JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
@@ -137,6 +183,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Encode image to PNG base64
+    // https://stackoverflow.com/questions/20656649/how-to-convert-bitmap-to-png-and-then-to-base64-in-android
     public static String encodeToBase64(Bitmap image) {
         Bitmap immagex=image;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
