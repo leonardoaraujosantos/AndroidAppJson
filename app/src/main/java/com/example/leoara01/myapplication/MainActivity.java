@@ -12,6 +12,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     TextView mTextView;
     TextView mTextIP;
     TextView mTextName;
+    CheckBox mChkBox;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
@@ -48,13 +50,21 @@ public class MainActivity extends AppCompatActivity {
 
             //TODO: Rotate only if it's the frontal camera (We need to detect that)
             // Rotate bitmap
-            Matrix matrix = new Matrix();
-            matrix.preRotate(-90);
-            Bitmap scaledBitmap  = Bitmap.createScaledBitmap(bmpFace, bmpFace.getWidth(), bmpFace.getHeight(), true);
-            Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
-
-            imgFace.setImageBitmap(rotatedBitmap);
-            imgStringEncoded = encodeToBase64(rotatedBitmap);
+            if (mChkBox.isChecked()){
+                Matrix matrix = new Matrix();
+                matrix.preRotate(-90);
+                Bitmap scaledBitmap  = Bitmap.createScaledBitmap(bmpFace, bmpFace.getWidth(), bmpFace.getHeight(), true);
+                Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
+                imgFace.setImageBitmap(rotatedBitmap);
+                imgStringEncoded = encodeToBase64(rotatedBitmap);
+            } else {
+                Matrix matrix = new Matrix();
+                matrix.preRotate(90);
+                Bitmap scaledBitmap  = Bitmap.createScaledBitmap(bmpFace, bmpFace.getWidth(), bmpFace.getHeight(), true);
+                Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
+                imgFace.setImageBitmap(rotatedBitmap);
+                imgStringEncoded = encodeToBase64(rotatedBitmap);
+            }
 
             String url = mTextIP.getText() + "add_person";
             RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
@@ -98,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
         mTextIP = (TextView) findViewById(R.id.txtIP);
         mTextName = (TextView) findViewById(R.id.txtName);
         imgFace = (ImageView) findViewById(R.id.imgFace);
+        mChkBox = (CheckBox) findViewById(R.id.chkBx);
 
         // Get list of persons
         btListPerson.setOnClickListener(new View.OnClickListener() {

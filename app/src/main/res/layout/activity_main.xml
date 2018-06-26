@@ -10,11 +10,12 @@
         android:id="@+id/btListPerson"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginLeft="52dp"
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="24dp"
         android:text="List Person"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/btAddPerson" />
 
     <TextView
         android:id="@+id/textView"
@@ -28,9 +29,12 @@
         android:id="@+id/btDeletePerson"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="252dp"
+        android:layout_marginStart="252dp"
+        android:layout_marginTop="23dp"
         android:text="Delete Person"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btAddPerson" />
 
     <EditText
         android:id="@+id/txtIP"
@@ -38,12 +42,12 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="12dp"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="10dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="http://10.45.68.72:8080/"
+        android:text="http://192.168.43.44:8080/"
         app:layout_constraintStart_toEndOf="@+id/lbCam"
-        app:layout_constraintTop_toBottomOf="@+id/btListPerson" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
     <EditText
         android:id="@+id/txtName"
@@ -60,18 +64,18 @@
 
     <ImageView
         android:id="@+id/imgFace"
-        android:layout_width="247dp"
-        android:layout_height="259dp"
-        android:layout_marginLeft="80dp"
-        android:layout_marginStart="80dp"
-        android:layout_marginTop="28dp"
+        android:layout_width="219dp"
+        android:layout_height="231dp"
+        android:layout_marginLeft="96dp"
+        android:layout_marginStart="96dp"
+        android:layout_marginTop="4dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtName"
         app:srcCompat="@android:color/holo_green_light" />
 
     <Button
         android:id="@+id/btAddPerson"
-        android:layout_width="wrap_content"
+        android:layout_width="112dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="89dp"
         android:layout_marginLeft="89dp"
@@ -85,13 +89,13 @@
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="92dp"
-        android:layout_height="35dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="139dp"
+        android:layout_height="56dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="6dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/arm_logo" />
 
     <TextView
@@ -100,10 +104,10 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="41dp"
+        android:layout_marginTop="26dp"
         android:text="Camera3"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btListPerson" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
     <TextView
         android:id="@+id/lbPerson"
@@ -115,5 +119,17 @@
         android:text="Person"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lbCam" />
+
+    <CheckBox
+        android:id="@+id/chkBx"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="36dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="12dp"
+        android:checked="true"
+        android:text="Selfie Cam"
+        app:layout_constraintStart_toEndOf="@+id/btAddPerson"
+        app:layout_constraintTop_toBottomOf="@+id/imgFace" />
 
 </android.support.constraint.ConstraintLayout>
