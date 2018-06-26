@@ -46,24 +46,15 @@ public class MainActivity extends AppCompatActivity {
             // Get the image from the activity and convert to base64 before encoding on PNG
             bmpFace = (Bitmap)data.getExtras().get("data");
 
-            // Check camera orientation
-            int cameraCount = Camera.getNumberOfCameras();
-            Camera cam = null;
-            Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
-            Camera.getCameraInfo(0, cameraInfo);
-            if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT){
-                // Rotate bitmap
-                Matrix matrix = new Matrix();
-                matrix.preRotate(-90);
-                Bitmap scaledBitmap  = Bitmap.createScaledBitmap(bmpFace, bmpFace.getWidth(), bmpFace.getHeight(), true);
-                Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
+            //TODO: Rotate only if it's the frontal camera (We need to detect that)
+            // Rotate bitmap
+            Matrix matrix = new Matrix();
+            matrix.preRotate(-90);
+            Bitmap scaledBitmap  = Bitmap.createScaledBitmap(bmpFace, bmpFace.getWidth(), bmpFace.getHeight(), true);
+            Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
 
-                imgFace.setImageBitmap(rotatedBitmap);
-                imgStringEncoded = encodeToBase64(rotatedBitmap);
-            } else {
-                imgFace.setImageBitmap(bmpFace);
-                imgStringEncoded = encodeToBase64(bmpFace);
-            }
+            imgFace.setImageBitmap(rotatedBitmap);
+            imgStringEncoded = encodeToBase64(rotatedBitmap);
 
             String url = mTextIP.getText() + "add_person";
             RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());

@@ -36,39 +36,35 @@
         android:id="@+id/txtIP"
         android:layout_width="252dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="24dp"
         android:ems="10"
         android:inputType="textPersonName"
         android:text="http://10.45.68.72:8080/"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/lbCam"
         app:layout_constraintTop_toBottomOf="@+id/btListPerson" />
 
     <EditText
         android:id="@+id/txtName"
         android:layout_width="251dp"
         android:layout_height="45dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="12dp"
         android:ems="10"
         android:inputType="textPersonName"
         android:text="Leonardo"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/lbPerson"
         app:layout_constraintTop_toBottomOf="@+id/txtIP" />
 
     <ImageView
         android:id="@+id/imgFace"
-        android:layout_width="177dp"
-        android:layout_height="186dp"
-        android:layout_marginEnd="71dp"
-        android:layout_marginLeft="7dp"
-        android:layout_marginRight="71dp"
-        android:layout_marginStart="7dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        android:layout_width="247dp"
+        android:layout_height="259dp"
+        android:layout_marginLeft="80dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="28dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtName"
         app:srcCompat="@android:color/holo_green_light" />
@@ -82,9 +78,42 @@
         android:layout_marginRight="89dp"
         android:layout_marginStart="89dp"
         android:layout_marginTop="13dp"
-        android:text="Add Person Picture"
+        android:text="Add Person"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imgFace" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="92dp"
+        android:layout_height="35dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/arm_logo" />
+
+    <TextView
+        android:id="@+id/lbCam"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="41dp"
+        android:text="Camera3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btListPerson" />
+
+    <TextView
+        android:id="@+id/lbPerson"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="40dp"
+        android:text="Person"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lbCam" />
 
 </android.support.constraint.ConstraintLayout>
